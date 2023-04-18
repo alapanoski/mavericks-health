@@ -21,52 +21,49 @@ import Scanner from "@/components/Scanner";
 import { Blob } from "web3.storage";
 import { Web3Storage } from "web3.storage";
 
-
 const apiToken =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweEQxQzBFMTk2RjhBNzdmNjI4MjI0MmU5MzFEOWY1QjFGRjIwMjI1MEUiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NzAwNDE5NTI3MzQsIm5hbWUiOiJKWkYyMSJ9.YXs9x4F23BuJdqivhodhfblh46egy87gel-ICnqKnHg";
 
 const client = new Web3Storage({ token: apiToken });
 export default function Dashboard() {
-
   const [patient, setPatient] = useState({});
   const router = useRouter();
-  const [patientName,setPatientName]=useState("John Doe")
-  const [dateOfBirth,setDateOfBirth]=useState("01/01/2000")
-  const [bloodGroup,setBloodGroup]=useState("A+")
-  const [contactNumber,setContactNumber]=useState(9847031225)
-  const [address,setAddress]=useState("Mamatha Nagar Kochi");
-  const [prescription,setPrescription]=useState("")
-  const [link,setLink]=useState("")
- 
-    const handleUpload2 = async () => {
-      const myJson = {
-        patientName: patientName,
-        dateOfBirth: dateOfBirth,
-        bloodGroup: bloodGroup,
-        contactNumber: contactNumber,
-        address: address,
-        symptoms: symptoms,
-        diagnosis:diagnosis,
-        prescription:prescription
-      };
-      const jsonString = JSON.stringify(myJson);
-      const blob = new Blob([jsonString], { type: "application/pdf" });
-      const fileName = name + ".json";
-      const cid = await client.put([blob], {
-        wrapWithDirectory: false,
-        name: fileName,
-      });
-      console.log(`File uploaded: https://${cid}.ipfs.w3s.link`);
-      setLink(`https://${cid}.ipfs.w3s.link`)
+  const [patientName, setPatientName] = useState("John Doe");
+  const [dateOfBirth, setDateOfBirth] = useState("01/01/2000");
+  const [bloodGroup, setBloodGroup] = useState("A+");
+  const [contactNumber, setContactNumber] = useState(9847031225);
+  const [address, setAddress] = useState("Mamatha Nagar Kochi");
+  const [prescription, setPrescription] = useState("");
+  const [link, setLink] = useState("");
+
+  const handleUpload2 = async () => {
+    const myJson = {
+      patientName: patientName,
+      dateOfBirth: dateOfBirth,
+      bloodGroup: bloodGroup,
+      contactNumber: contactNumber,
+      address: address,
+      symptoms: symptoms,
+      diagnosis: diagnosis,
+      prescription: prescription,
     };
+    const jsonString = JSON.stringify(myJson);
+    const blob = new Blob([jsonString], { type: "application/pdf" });
+    const fileName = name + ".json";
+    const cid = await client.put([blob], {
+      wrapWithDirectory: false,
+      name: fileName,
+    });
+    console.log(`File uploaded: https://${cid}.ipfs.w3s.link`);
+    setLink(`https://${cid}.ipfs.w3s.link`);
+  };
 
-  const [symptoms, setSymptoms] = useState("")
-  const [diagnosis, setDiagnosis] = useState("")
-  const [tab, setTab] = useState("home")
-  const [accountActionsOpen, setAccountActionsOpen] = useState(false)
-  const [patientId, setPatientId] = useState(null)
-  const [shouldShowModal, setShouldShowModal] = useState(false)
-
+  const [symptoms, setSymptoms] = useState("");
+  const [diagnosis, setDiagnosis] = useState("");
+  const [tab, setTab] = useState("home");
+  const [accountActionsOpen, setAccountActionsOpen] = useState(false);
+  const [patientId, setPatientId] = useState(null);
+  const [shouldShowModal, setShouldShowModal] = useState(false);
 
   const logout = () => {
     signOut(auth)
@@ -164,98 +161,102 @@ export default function Dashboard() {
   };
 
   return (
-    <div className='h-screen w-full flex flex-row'>
-      <Sidebar tab={tab} setTab={setTab} />
-      <div className='h-full w-full'>
-        <Navbar
-          accountActionsOpen={accountActionsOpen}
-          setAccountActionsOpen={setAccountActionsOpen}
-        />
-        {accountActionsOpen && (
-          <div className='absolute rounded right-0 w-72 bg-white shadow flex flex-col gap-2 py-4 px-1'>
-            <p className='font-bold text-xl px-2'>Dr. Smith</p>
-            <p className='px-2'>{auth.currentUser?.email}</p>
-            <button className='w-full px-2 py-2 rounded flex flex-row justify-between items-center hover:bg-gray-200'>
-              Account
-              <FiSettings />
-            </button>
-            <button
-              className='w-full px-2 py-2 rounded flex flex-row justify-between items-center hover:bg-gray-200'
-              onClick={logout}
-            >
-              Log Out
-              <MdLogout />
-            </button>
-          </div>
-        )}
-        <div className='w-full flex flex-col gap-4'>
-          <div className='h-64 px-8 py-4 mx-8  my-8 flex flex-col gap-2 bg-slate-100 rounded-xl'>
-            <p className='text-2xl font-semibold tracking-wide'>
-              Patient Details
-            </p>
-
-            <div className='w-full h-full flex flex-row justify-between items-center'>
-              <div className='h-full flex flex-col justify-center items-start gap-4 text-3xl'>
-                <p>
-                  Name: <span className='font-bold'>John Doe</span>
-                </p>
-                <p>
-                  Patient ID: <span className='font-bold'>{patientId}</span>
-                </p>
-                <p>
-                  Age: <span className='font-bold'>65</span>
-                </p>
-                <Link href={`/patient/${patientId}`} className='text-sm'>
-                  View More Details
-                </Link>
-              </div>
-              <div className='flex flex-col justify-center items-center gap-4'>
-                <button
-                  onClick={() => setShouldShowModal(true)}
-                  className='btn'
-                >
-                  Next Patient
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className='w-full h-72 flex flex-row justify-evenly items-center'>
-            <div className='h-full w-full flex flex-col justify-center items-center gap-4'>
-              <p className='text-3xl'>Symptoms</p>
-              <textarea
-                className='h-full w-full'
-                value={symptoms}
-                onChange={(e) => {
-                  setSymptoms(e.target.value);
-                }}
-                placeholder='Please start recording to generate symptoms'
-              ></textarea>
-              <button className='btn' onClick={startDiagnosis}>
-                Start diagnosis
+    <>
+      <Navbar
+        accountActionsOpen={accountActionsOpen}
+        setAccountActionsOpen={setAccountActionsOpen}
+      />
+      <div className="h-screen w-full flex flex-row">
+        <Sidebar tab={tab} setTab={setTab} />
+        <div className="h-full w-full">
+          {accountActionsOpen && (
+            <div className="absolute rounded right-0 w-72 bg-white shadow flex flex-col gap-2 py-4 px-1">
+              <p className="font-bold text-xl px-2">Dr. Smith</p>
+              <p className="px-2">{auth.currentUser?.email}</p>
+              <button className="w-full px-2 py-2 rounded flex flex-row justify-between items-center hover:bg-gray-200">
+                Account
+                <FiSettings />
+              </button>
+              <button
+                className="w-full px-2 py-2 rounded flex flex-row justify-between items-center hover:bg-gray-200"
+                onClick={logout}
+              >
+                Log Out
+                <MdLogout />
               </button>
             </div>
-            <div className='h-full w-full flex flex-col justify-center items-center gap-4'>
-              <p className='text-3xl'>Diagnosis</p>
-              <textarea
-                className='h-full w-full'
-                value={diagnosis}
-                onChange={(e) => setDiagnosis(e.target.value)}
-                placeholder='No diagnosis yet...'
-              ></textarea>
-            </div>
-          </div>
-          <div className='flex justify-center'>
-            <div style={{ flex: 1 }}>
-              <Recorder setSymptoms={setSymptoms} />
-            </div>
-          </div>
+          )}
+          <div className="w-full flex flex-col gap-4">
+            <div className="h-64 px-8 py-4 mx-8  my-8 flex flex-col gap-2 bg-slate-100 rounded-xl">
+              <p className="text-2xl font-semibold tracking-wide">
+                Patient Details
+              </p>
 
+              <div className="w-full h-full flex flex-row justify-between items-center">
+                <div className="h-full flex flex-col justify-center items-start gap-4 text-3xl">
+                  <p>
+                    Name: <span className="font-bold">John Doe</span>
+                  </p>
+                  <p>
+                    Patient ID: <span className="font-bold">{patientId}</span>
+                  </p>
+                  <p>
+                    Age: <span className="font-bold">65</span>
+                  </p>
+                  <Link href={`/patient/${patientId}`} className="text-sm">
+                    View More Details
+                  </Link>
+                </div>
+                <div className="flex flex-col justify-center items-center gap-4">
+                  <button
+                    onClick={() => setShouldShowModal(true)}
+                    className="btn"
+                  >
+                    Next Patient
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="w-full h-72 flex flex-row justify-evenly items-center">
+              <div className="h-full w-full flex flex-col justify-center items-center gap-4">
+                <p className="text-3xl">Symptoms</p>
+                <textarea
+                  className="h-full w-full"
+                  value={symptoms}
+                  onChange={(e) => {
+                    setSymptoms(e.target.value);
+                  }}
+                  placeholder="Please start recording to generate symptoms"
+                ></textarea>
+                <button className="btn" onClick={startDiagnosis}>
+                  Start diagnosis
+                </button>
+              </div>
+              <div className="h-full w-full flex flex-col justify-center items-center gap-4">
+                <p className="text-3xl">Diagnosis</p>
+                <textarea
+                  className="h-full w-full"
+                  value={diagnosis}
+                  onChange={(e) => setDiagnosis(e.target.value)}
+                  placeholder="No diagnosis yet..."
+                ></textarea>
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <div style={{ flex: 1 }}>
+                <Recorder setSymptoms={setSymptoms} />
+              </div>
+            </div>
 
-          <button className='btn' onClick={handleUpload2}>
-           <a href={link} target="blank_"> {link ? link: "Generate Report"}</a>
-          </button>
+            <button className="btn" onClick={handleUpload2}>
+              <a href={link} target="blank_">
+                {" "}
+                {link ? link : "Generate Report"}
+              </a>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
